@@ -1,0 +1,18 @@
+<h1 class="h3 mb-3">DIY STORE</h1>
+
+<div class="card" style="max-width: 28rem;">
+  <div class="card-body">
+    <h2 class="h6 card-title">Stare conexiune (temporar)</h2>
+    @if (status() === undefined) {
+      <p class="mb-0 text-muted">Se verifica API-ul...</p>
+    } @else if (status() === null) {
+      <p class="mb-0 text-danger">API-ul nu raspunde. Porneste proiectul din folderul api.</p>
+    } @else {
+      <p class="mb-1 text-success">API: {{ status()!.status }}</p>
+      <p class="mb-0" [class.text-success]="status()!.database === 'connected'"
+         [class.text-danger]="status()!.database !== 'connected'">
+        Baza de date: {{ status()!.database }}
+      </p>
+    }
+  </div>
+</div>
