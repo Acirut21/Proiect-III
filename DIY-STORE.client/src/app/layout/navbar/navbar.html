@@ -1,5 +1,33 @@
 <nav class="navbar navbar-dark bg-dark py-2">
   <div class="container">
     <a class="navbar-brand mb-0" routerLink="/">DIY STORE</a>
+
+    <div class="d-flex align-items-center gap-2">
+      <div class="dropdown" (click)="$event.stopPropagation()">
+        <button type="button" class="btn btn-outline-light dropdown-toggle"
+                [attr.aria-expanded]="menuOpen()" (click)="toggleMenu()">
+          @if (auth.user(); as user) {
+            {{ user.username }}
+          } @else {
+            Account
+          }
+        </button>
+
+        <ul class="dropdown-menu dropdown-menu-end" [class.show]="menuOpen()" data-bs-popper="static">
+          @if (auth.isLoggedIn()) {
+            <li>
+              <button type="button" class="dropdown-item text-danger" (click)="logout()">Log out</button>
+            </li>
+          } @else {
+            <li><a class="dropdown-item" routerLink="/login" (click)="closeMenu()">Login</a></li>
+            <li><a class="dropdown-item" routerLink="/register" (click)="closeMenu()">Sign up</a></li>
+          }
+        </ul>
+      </div>
+
+      @if (auth.isAdmin()) {
+        <a class="btn btn-outline-warning" routerLink="/admin">Admin</a>
+      }
+    </div>
   </div>
 </nav>

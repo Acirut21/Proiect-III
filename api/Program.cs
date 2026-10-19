@@ -1,8 +1,10 @@
 using System.Text;
+using DiyStore.Api.Auth;
 using DiyStore.Api.Identity;
 using DiyStore.Api.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -34,19 +36,25 @@ if (string.IsNullOrWhiteSpace(jwtKey) || jwtKey.Length < 32)
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(o => o.TokenValidationParameters = new TokenValidationParameters
+    .AddJwtBearer(o =>
     {
-        ValidIssuer = config["Jwt:Issuer"],
-        ValidAudience = config["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateIssuerSigningKey = true,
-        ValidateLifetime = true,
-        NameClaimType = "name",
-        RoleClaimType = "role"
+        // Pastram numele scurte ale claim-urilor (sub, name, role), fara remapare la tipurile .NET
+        o.MapInboundClaims = false;
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidIssuer = config["Jwt:Issuer"],
+            ValidAudience = config["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            ValidateLifetime = true,
+            NameClaimType = "name",
+            RoleClaimType = "role"
+        };
     });
 builder.Services.AddAuthorization();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 // CORS pentru serverul de dezvoltare Angular
 const string ClientPolicy = "client";
@@ -55,7 +63,14 @@ builder.Services.AddCors(o => o.AddPolicy(ClientPolicy, p => p
     .AllowAnyHeader()
     .AllowAnyMethod()));
 
-builder.Services.AddControllers();
+// Erorile de validare au aceeasi forma ca restul erorilor: { "errors": [...] }
+builder.Services.AddControllers().ConfigureApiBehaviorOptions(o =>
+    o.InvalidModelStateResponseFactory = ctx => new BadRequestObjectResult(
+        new ErrorResponse(ctx.ModelState.Values
+            .SelectMany(v => v.Errors)
+            .Select(e => e.ErrorMessage)
+            .Distinct()
+            .ToList())));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

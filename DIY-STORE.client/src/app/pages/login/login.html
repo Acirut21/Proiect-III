@@ -1,0 +1,49 @@
+<div class="row justify-content-center py-4">
+  <div class="col-md-6 col-lg-4">
+    <div class="card shadow-sm">
+      <div class="card-header bg-warning-subtle text-center py-3">
+        <h1 class="h4 mb-1">Log in</h1>
+        <p class="small text-muted mb-0">Welcome back! Log in to your account.</p>
+      </div>
+
+      <div class="card-body p-4">
+        @if (errors().length > 0) {
+          <div class="alert alert-danger py-2" role="alert">
+            @for (message of errors(); track message) {
+              <div>{{ message }}</div>
+            }
+          </div>
+        }
+
+        <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          <div class="mb-3">
+            <label for="login" class="form-label">Email or username</label>
+            <input id="login" type="text" class="form-control" formControlName="login"
+                   autocomplete="username" [class.is-invalid]="showError('login')">
+            @if (showError('login')) {
+              <div class="invalid-feedback">Email or username is required.</div>
+            }
+          </div>
+
+          <div class="mb-4">
+            <label for="password" class="form-label">Password</label>
+            <input id="password" type="password" class="form-control" formControlName="password"
+                   autocomplete="current-password" [class.is-invalid]="showError('password')">
+            @if (showError('password')) {
+              <div class="invalid-feedback">Password is required.</div>
+            }
+          </div>
+
+          <button type="submit" class="btn btn-warning w-100" [disabled]="busy()">
+            {{ busy() ? 'Logging in...' : 'Log In' }}
+          </button>
+        </form>
+
+        <p class="text-center small text-muted mt-4 mb-0">
+          Don't have an account?
+          <a routerLink="/register">Create one for free</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
