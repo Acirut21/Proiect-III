@@ -16,6 +16,9 @@ public class Product
 
     public int Stock { get; set; }
 
+    /// <summary>Cum poate fi livrat produsul (curier, ridicare din magazin sau ambele).</summary>
+    public DeliveryMethod DeliveryMethods { get; set; } = DeliveryMethod.Courier;
+
     /// <summary>Producatorul produsului; in aplicatie joaca si rolul de "furnizor".</summary>
     public string ManufacturerName { get; set; } = "";
     public string? ManufacturerLogoPath { get; set; }

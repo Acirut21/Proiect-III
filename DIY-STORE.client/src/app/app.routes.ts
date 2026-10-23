@@ -22,9 +22,68 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/access-denied/access-denied').then(m => m.AccessDenied),
   },
   {
+    // Toata zona de administrare cere rolul Admin (verificat si la fiecare navigare intre pagini)
     path: 'admin',
     canActivate: [adminGuard],
-    loadComponent: () => import('./pages/admin/admin-home').then(m => m.AdminHome),
+    canActivateChild: [adminGuard],
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        loadComponent: () => import('./pages/admin/admin-home').then(m => m.AdminHome),
+      },
+
+      // Produse
+      {
+        path: 'products',
+        loadComponent: () => import('./pages/admin/products/product-list').then(m => m.ProductList),
+      },
+      {
+        path: 'products/new',
+        loadComponent: () => import('./pages/admin/products/product-form').then(m => m.ProductForm),
+      },
+      {
+        path: 'products/:id/edit',
+        loadComponent: () => import('./pages/admin/products/product-form').then(m => m.ProductForm),
+      },
+      {
+        path: 'products/:id/delete',
+        loadComponent: () => import('./pages/admin/products/product-delete').then(m => m.ProductDelete),
+      },
+
+      // Categorii
+      {
+        path: 'categories',
+        loadComponent: () => import('./pages/admin/categories/category-list').then(m => m.CategoryList),
+      },
+      {
+        path: 'categories/new',
+        loadComponent: () => import('./pages/admin/categories/category-form').then(m => m.CategoryForm),
+      },
+      {
+        path: 'categories/:id/edit',
+        loadComponent: () => import('./pages/admin/categories/category-form').then(m => m.CategoryForm),
+      },
+      {
+        path: 'categories/:id/delete',
+        loadComponent: () => import('./pages/admin/categories/category-delete').then(m => m.CategoryDelete),
+      },
+
+      // Subcategorii
+      {
+        path: 'subcategories/new',
+        loadComponent: () => import('./pages/admin/categories/subcategory-form').then(m => m.SubcategoryForm),
+      },
+      {
+        path: 'subcategories/:id/edit',
+        loadComponent: () => import('./pages/admin/categories/subcategory-form').then(m => m.SubcategoryForm),
+      },
+      {
+        path: 'subcategories/:id/delete',
+        loadComponent: () =>
+          import('./pages/admin/categories/subcategory-delete').then(m => m.SubcategoryDelete),
+      },
+    ],
   },
   { path: '**', redirectTo: '' },
 ];

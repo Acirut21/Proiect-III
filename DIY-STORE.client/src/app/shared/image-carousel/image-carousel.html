@@ -1,0 +1,27 @@
+<div class="position-relative bg-light d-flex align-items-center justify-content-center overflow-hidden rounded"
+     [style.height.px]="height()">
+  @if (images().length === 0) {
+    <span class="text-muted small">No image</span>
+  } @else {
+    <img [src]="'/images/' + images()[safeIndex()]" [alt]="alt()"
+         class="mw-100 mh-100" style="object-fit:contain;padding:8px;">
+
+    @if (images().length > 1) {
+      <button type="button" class="btn btn-dark btn-sm rounded-circle position-absolute top-50 start-0 translate-middle-y ms-1 opacity-75"
+              aria-label="Previous image" (click)="move(-1)">&#8249;</button>
+      <button type="button" class="btn btn-dark btn-sm rounded-circle position-absolute top-50 end-0 translate-middle-y me-1 opacity-75"
+              aria-label="Next image" (click)="move(1)">&#8250;</button>
+
+      @if (dots()) {
+        <div class="position-absolute bottom-0 start-50 translate-middle-x mb-2 d-flex gap-1">
+          @for (image of images(); track $index) {
+            <button type="button" class="btn p-0 rounded-circle border-0"
+                    style="width:10px;height:10px;"
+                    [class.bg-warning]="$index === safeIndex()" [class.bg-secondary]="$index !== safeIndex()"
+                    [attr.aria-label]="'Show image ' + ($index + 1)" (click)="goTo($index)"></button>
+          }
+        </div>
+      }
+    }
+  }
+</div>

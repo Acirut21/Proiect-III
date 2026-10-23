@@ -1,0 +1,82 @@
+<h2 class="mb-4">
+  @if (page(); as p) { {{ p.title }} } @else if (isPromotions) { Promotions } @else { Products }
+</h2>
+
+<form [formGroup]="filters" (ngSubmit)="apply()" class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
+  <div class="d-flex align-items-center gap-3 flex-wrap">
+    <div class="d-flex align-items-center gap-1">
+      <label for="perPage">Show</label>
+      <select id="perPage" formControlName="perPage" class="form-select form-select-sm" style="width:80px;">
+        @for (n of pageSizes; track n) {
+          <option [value]="n">{{ n }}</option>
+        }
+      </select>
+      <span>per page</span>
+    </div>
+
+    @if (!isPromotions) {
+      <div class="form-check mb-0">
+        <input id="onSale" type="checkbox" class="form-check-input" formControlName="onSale">
+        <label for="onSale" class="form-check-label fw-semibold text-danger">🔥 On Sale only</label>
+      </div>
+    } @else if (categories().length > 0) {
+      <div class="d-flex align-items-center gap-1">
+        <label for="cat" class="fw-semibold small mb-0">Category:</label>
+        <select id="cat" formControlName="cat" class="form-select form-select-sm" style="width:170px;">
+          <option value="">All categories</option>
+          @for (category of categories(); track category.id) {
+            <option [value]="category.slug">{{ category.name }}</option>
+          }
+        </select>
+      </div>
+    }
+  </div>
+
+  <div class="d-flex align-items-center gap-2">
+    <span>Price:</span>
+    <input type="number" min="0" formControlName="minPrice" class="form-control form-control-sm" placeholder="Min"
+           style="width:90px;" aria-label="Minimum price">
+    –
+    <input type="number" min="0" formControlName="maxPrice" class="form-control form-control-sm" placeholder="Max"
+           style="width:90px;" aria-label="Maximum price">
+    <button type="submit" class="btn btn-outline-primary btn-sm">Apply</button>
+  </div>
+
+  <div class="text-muted small">
+    @if (page(); as p) {
+      @if (p.totalCount > 0) {
+        Showing {{ start }}–{{ end }} of {{ p.totalCount }} products
+      }
+    }
+  </div>
+</form>
+
+@if (error()) {
+  <div class="alert alert-danger" role="alert">{{ error() }}</div>
+} @else if (page(); as p) {
+  <div class="row g-4">
+    @for (product of p.items; track product.id) {
+      <div class="col-6 col-md-3">
+        <app-product-card [product]="product" />
+      </div>
+    } @empty {
+      <div class="col-12 text-center py-5">
+        <p class="text-muted fs-5">No products found.</p>
+      </div>
+    }
+  </div>
+
+  @if (p.totalPages > 1) {
+    <nav class="mt-4" aria-label="Pages">
+      <ul class="pagination justify-content-center">
+        @for (n of pages(); track n) {
+          <li class="page-item" [class.active]="n === p.page">
+            <a class="page-link" [routerLink]="[]" [queryParams]="{ page: n }" queryParamsHandling="merge">{{ n }}</a>
+          </li>
+        }
+      </ul>
+    </nav>
+  }
+} @else {
+  <p class="text-muted">Loading...</p>
+}

@@ -1,0 +1,17 @@
+@let p = product();
+<div class="card shadow-sm h-100 text-center position-relative product-card">
+  @if (p.isOnSale) {
+    <span class="badge bg-danger position-absolute top-0 end-0 m-2" style="z-index:2">SALE</span>
+  }
+
+  <app-image-carousel [images]="p.images" [alt]="p.name" [height]="compact() ? 160 : 200" />
+
+  <div class="card-body d-flex flex-column">
+    <h6 class="card-title" [class.small]="compact()" [class.fw-semibold]="compact()">{{ p.name }}</h6>
+    @if (p.previousPrice !== null) {
+      <p class="text-muted text-decoration-line-through mb-0">{{ p.previousPrice | number: '1.2-2' }} RON</p>
+    }
+    <p class="fw-bold text-warning mb-2">{{ p.price | number: '1.2-2' }} RON</p>
+    <a [routerLink]="['/products', p.slug]" class="btn btn-outline-secondary btn-sm mt-auto">View</a>
+  </div>
+</div>

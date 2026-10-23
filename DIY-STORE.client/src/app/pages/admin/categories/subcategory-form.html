@@ -1,0 +1,58 @@
+<h1 class="h3 mb-4">
+  @if (isEdit) {
+    Edit Subcategory@if (current(); as s) {: {{ s.name }}}
+  } @else {
+    Create Subcategory
+  }
+</h1>
+
+@if (notFound()) {
+  <div class="alert alert-warning">This subcategory no longer exists.</div>
+} @else if (loading()) {
+  <p class="text-muted">Loading...</p>
+} @else {
+  <div class="card shadow-sm p-4" style="max-width:500px;">
+    @for (message of errors(); track message) {
+      <div class="alert alert-danger py-2" role="alert">{{ message }}</div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="mb-3">
+        <label for="categoryId" class="form-label">Parent Category</label>
+        <select id="categoryId" class="form-select" formControlName="categoryId"
+                [class.is-invalid]="!!error('categoryId')">
+          <option [ngValue]="null">– Select category –</option>
+          @for (category of categories(); track category.id) {
+            <option [ngValue]="category.id">{{ category.name }}</option>
+          }
+        </select>
+        @if (error('categoryId'); as message) {
+          <div class="invalid-feedback">{{ message }}</div>
+        }
+      </div>
+
+      <div class="mb-3">
+        <label for="name" class="form-label">Subcategory Name</label>
+        <input id="name" type="text" class="form-control" formControlName="name"
+               [class.is-invalid]="!!error('name')">
+        @if (error('name'); as message) {
+          <div class="invalid-feedback">{{ message }}</div>
+        }
+      </div>
+
+      <div class="mb-3">
+        <app-image-input
+          label="Image (optional)"
+          [currentPath]="current()?.imagePath ?? null"
+          [hint]="isEdit ? 'Upload a new image (leave empty to keep existing).' : 'Upload an image from your computer.'"
+          (fileChange)="onImageChange($event)" />
+      </div>
+
+      <button type="submit" class="btn btn-warning w-100" [disabled]="busy()">
+        {{ isEdit ? 'Save Changes' : 'Create Subcategory' }}
+      </button>
+    </form>
+  </div>
+}
+
+<a routerLink="/admin/categories" class="btn btn-outline-secondary mt-3">← Back</a>

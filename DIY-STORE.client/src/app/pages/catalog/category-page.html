@@ -1,0 +1,32 @@
+@if (loading()) {
+  <p class="text-muted">Loading...</p>
+} @else if (error()) {
+  <div class="alert alert-danger" role="alert">{{ error() }}</div>
+} @else if (notFound()) {
+  <h2>Category not found</h2>
+  <div class="alert alert-info mt-3">No subcategories found for this category.</div>
+} @else if (category(); as c) {
+  <h2>{{ c.name }}</h2>
+
+  @if (c.subcategories.length === 0) {
+    <div class="alert alert-info mt-3">No subcategories found for this category.</div>
+  }
+
+  <div class="row g-4 mt-2">
+    @for (sub of c.subcategories; track sub.id) {
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100 text-center">
+          <div class="p-2">
+            <app-image-carousel [images]="sub.imagePath ? [sub.imagePath] : []" [alt]="sub.name" [height]="200" />
+          </div>
+          <div class="card-body d-flex flex-column">
+            <h5 class="mb-3 mt-auto">{{ sub.name }}</h5>
+            <a routerLink="/products" [queryParams]="{ cat: c.slug, sub: sub.slug }" class="btn btn-warning">
+              View products
+            </a>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+}

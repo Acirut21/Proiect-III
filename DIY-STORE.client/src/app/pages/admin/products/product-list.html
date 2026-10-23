@@ -1,0 +1,51 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0">Manage Products</h1>
+  <a routerLink="/admin/products/new" class="btn btn-warning">+ Add Product</a>
+</div>
+
+@if (success()) {
+  <div class="alert alert-success" role="status">{{ success() }}</div>
+}
+@if (error()) {
+  <div class="alert alert-danger" role="alert">{{ error() }}</div>
+}
+
+@if (products(); as list) {
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Stock</th>
+          <th>Category</th>
+          <th>On Sale</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (product of list; track product.id) {
+          <tr>
+            <td>{{ product.name }}<br><code class="small text-muted">{{ product.slug }}</code></td>
+            <td>{{ product.price | number: '1.2-2' }} RON</td>
+            <td>{{ product.stock }}</td>
+            <td>{{ product.categoryName }} / {{ product.subcategoryName }}</td>
+            <td>{{ product.isOnSale ? 'Yes' : '—' }}</td>
+            <td class="text-nowrap">
+              <a [routerLink]="['/admin/products', product.id, 'edit']" class="btn btn-sm btn-warning">Edit</a>
+              <a [routerLink]="['/admin/products', product.id, 'delete']" class="btn btn-sm btn-danger ms-1">Delete</a>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" class="text-center text-muted py-4">No products yet.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+} @else if (!error()) {
+  <p class="text-muted">Loading...</p>
+}
+
+<a routerLink="/admin" class="btn btn-outline-secondary mt-2">← Back to Dashboard</a>

@@ -1,0 +1,53 @@
+<h1 class="h3 mb-4">
+  @if (isEdit) {
+    Edit Category@if (current(); as c) {: {{ c.name }}}
+  } @else {
+    Create Category
+  }
+</h1>
+
+@if (notFound()) {
+  <div class="alert alert-warning">This category no longer exists.</div>
+} @else if (loading()) {
+  <p class="text-muted">Loading...</p>
+} @else {
+  <div class="card shadow-sm p-4" style="max-width:500px;">
+    @for (message of errors(); track message) {
+      <div class="alert alert-danger py-2" role="alert">{{ message }}</div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input id="name" type="text" class="form-control" formControlName="name"
+               [class.is-invalid]="!!error('name')">
+        @if (error('name'); as message) {
+          <div class="invalid-feedback">{{ message }}</div>
+        }
+      </div>
+
+      <div class="mb-3">
+        <label for="slug" class="form-label">Slug</label>
+        <input id="slug" type="text" class="form-control" formControlName="slug"
+               placeholder="e.g. power-tools" [class.is-invalid]="!!error('slug')">
+        @if (error('slug'); as message) {
+          <div class="invalid-feedback">{{ message }}</div>
+        }
+      </div>
+
+      <div class="mb-3">
+        <app-image-input
+          label="Category Image"
+          [currentPath]="current()?.imagePath ?? null"
+          [hint]="isEdit ? 'Upload a new image (leave empty to keep existing).' : 'Upload an image from your computer.'"
+          (fileChange)="onImageChange($event)" />
+      </div>
+
+      <button type="submit" class="btn btn-warning w-100" [disabled]="busy()">
+        {{ isEdit ? 'Save' : 'Create' }}
+      </button>
+    </form>
+  </div>
+}
+
+<a routerLink="/admin/categories" class="btn btn-outline-secondary mt-3">← Back</a>

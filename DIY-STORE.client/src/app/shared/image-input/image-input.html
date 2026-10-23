@@ -1,0 +1,20 @@
+<label class="form-label">{{ label() }}</label>
+
+@if (previewUrl(); as url) {
+  <div class="mb-2 d-flex align-items-center gap-2">
+    <img [src]="url" alt="Selected image preview" class="image-input-preview"
+         style="max-height:80px;max-width:120px;object-fit:contain;border:1px solid #dee2e6;border-radius:6px;padding:4px;">
+    <small class="text-muted">New: {{ fileName() }}</small>
+  </div>
+} @else if (currentPath(); as path) {
+  <div class="mb-2 d-flex align-items-center gap-2">
+    <img [src]="'/images/' + path" alt="Current image" class="image-input-current"
+         style="max-height:80px;max-width:120px;object-fit:contain;border:1px solid #dee2e6;border-radius:6px;padding:4px;">
+    <small class="text-muted">Current: {{ path }}</small>
+  </div>
+}
+
+<input type="file" class="form-control" accept="image/*" [attr.aria-label]="label()" (change)="onSelect($event)">
+@if (hint()) {
+  <div class="form-text">{{ hint() }}</div>
+}

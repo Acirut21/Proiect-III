@@ -1,5 +1,7 @@
+using System.Globalization;
 using System.Text;
 using DiyStore.Api.Auth;
+using DiyStore.Api.Catalog;
 using DiyStore.Api.Identity;
 using DiyStore.Api.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -7,6 +9,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+
+// Preturile din formulare ("12.50") se citesc la fel pe orice calculator, indiferent de limba sistemului
+CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -55,6 +61,7 @@ builder.Services
     });
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IImageStorage, ImageStorage>();
 
 // CORS pentru serverul de dezvoltare Angular
 const string ClientPolicy = "client";
