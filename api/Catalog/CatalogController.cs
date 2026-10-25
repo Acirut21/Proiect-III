@@ -88,6 +88,28 @@ public class CatalogController(AppDbContext db) : ControllerBase
         return await PageAsync(db.Products.AsNoTracking(), cat, null, minPrice, maxPrice, true, perPage, page, "Promotions");
     }
 
+    /// <summary>
+    /// Cautare in numele si descrierea produselor. Intoarce toate rezultatele pe o singura pagina; o cautare
+    /// goala le intoarce pe toate, ca in aplicatia veche.
+    /// </summary>
+    [HttpGet("search")]
+    public async Task<ActionResult<ProductPageDto>> Search(string? q)
+    {
+        var query = (q ?? "").Trim();
+
+        var items = await db.Products
+            .AsNoTracking()
+            .Include(p => p.Images)
+            .Where(p => p.Name.Contains(query) || p.Description.Contains(query))
+            .OrderBy(p => p.Id)
+            .ToListAsync();
+
+        var perPage = items.Count > 0 ? items.Count : DefaultPageSize;
+        return new ProductPageDto(
+            items.Select(p => p.ToCard()).ToList(), items.Count, 1, perPage, 1,
+            $"Search results for: {query}");
+    }
+
     [HttpGet("products/{slug}")]
     public async Task<ActionResult<ProductDetailPageDto>> Product(string slug)
     {

@@ -1,11 +1,16 @@
-<nav class="navbar navbar-dark bg-dark py-2">
+<nav class="navbar navbar-dark bg-dark py-2 flex-column">
   <div class="container">
     <a class="navbar-brand mb-0" routerLink="/">DIY STORE</a>
+
+    <form class="flex-grow-1 mx-3 d-flex" role="search" (submit)="$event.preventDefault(); search(term.value)">
+      <input #term class="form-control me-2" type="search" placeholder="Product search..." aria-label="Product search">
+      <button class="btn btn-outline-light" type="submit">Search</button>
+    </form>
 
     <div class="d-flex align-items-center gap-2">
       <div class="dropdown" (click)="$event.stopPropagation()">
         <button type="button" class="btn btn-outline-light dropdown-toggle"
-                [attr.aria-expanded]="menuOpen()" (click)="toggleMenu()">
+                [attr.aria-expanded]="menuOpen()" (click)="categoriesOpen.set(false); toggleMenu()">
           @if (auth.user(); as user) {
             {{ user.username }}
           } @else {
@@ -29,5 +34,24 @@
         <a class="btn btn-outline-warning" routerLink="/admin">Admin</a>
       }
     </div>
+  </div>
+
+  <div class="container d-flex gap-1 pt-1">
+    <div class="dropdown" (click)="$event.stopPropagation()">
+      <button type="button" class="btn btn-outline-light dropdown-toggle" [attr.aria-expanded]="categoriesOpen()"
+              (click)="menuOpen.set(false); toggleCategories()">
+        Product Categories
+      </button>
+      <ul class="dropdown-menu" [class.show]="categoriesOpen()" data-bs-popper="static">
+        @for (category of categories(); track category.id) {
+          <li>
+            <a class="dropdown-item" [routerLink]="['/categories', category.slug]" (click)="closeMenu()">{{ category.name }}</a>
+          </li>
+        } @empty {
+          <li><span class="dropdown-item text-muted">No categories yet</span></li>
+        }
+      </ul>
+    </div>
+    <a class="btn btn-outline-light" routerLink="/promotions">Promotions</a>
   </div>
 </nav>

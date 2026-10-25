@@ -1,0 +1,22 @@
+@if (error()) {
+  <div class="alert alert-danger" role="alert">{{ error() }}</div>
+} @else if (page(); as p) {
+  <h2 class="mb-2">{{ p.title }}</h2>
+  @if (p.totalCount > 0) {
+    <p class="text-muted small mb-4">{{ p.totalCount }} {{ p.totalCount === 1 ? 'product' : 'products' }} found</p>
+  }
+
+  <div class="row g-4">
+    @for (product of p.items; track product.id) {
+      <div class="col-6 col-md-3">
+        <app-product-card [product]="product" />
+      </div>
+    } @empty {
+      <div class="col-12 text-center py-5">
+        <p class="text-muted fs-5">No products found.</p>
+      </div>
+    }
+  </div>
+} @else {
+  <p class="text-muted">Loading...</p>
+}

@@ -71,4 +71,5 @@ export interface ProductQuery {
   onSale?: string;
   perPage?: string;
   page?: string;
+  q?: string;
 }

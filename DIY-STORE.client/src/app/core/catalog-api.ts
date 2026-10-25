@@ -34,6 +34,10 @@ export class CatalogApi {
     return this.http.get<ProductPage>('/api/catalog/promotions', { params: toParams(query) });
   }
 
+  search(q: string): Observable<ProductPage> {
+    return this.http.get<ProductPage>('/api/catalog/search', { params: toParams({ q } as ProductQuery) });
+  }
+
   product(slug: string): Observable<ProductDetailPage> {
     return this.http.get<ProductDetailPage>(`/api/catalog/products/${encodeURIComponent(slug)}`);
   }

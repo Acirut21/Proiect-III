@@ -1,18 +1,43 @@
-<h1 class="h3 mb-3">DIY STORE</h1>
+<section class="text-center py-5 mb-4 rounded bg-dark text-light">
+  <h1 class="display-6 fw-bold">Everything you need for your DIY projects</h1>
+  <p class="lead">Tools, materials, and accessories at the best prices</p>
+  <a routerLink="/promotions" class="btn btn-warning btn-lg">Promotions</a>
+</section>
 
-<div class="card" style="max-width: 28rem;">
-  <div class="card-body">
-    <h2 class="h6 card-title">Stare conexiune (temporar)</h2>
-    @if (status() === undefined) {
-      <p class="mb-0 text-muted">Se verifica API-ul...</p>
-    } @else if (status() === null) {
-      <p class="mb-0 text-danger">API-ul nu raspunde. Porneste proiectul din folderul api.</p>
-    } @else {
-      <p class="mb-1 text-success">API: {{ status()!.status }}</p>
-      <p class="mb-0" [class.text-success]="status()!.database === 'connected'"
-         [class.text-danger]="status()!.database !== 'connected'">
-        Baza de date: {{ status()!.database }}
-      </p>
-    }
-  </div>
-</div>
+@if (error()) {
+  <div class="alert alert-danger" role="alert">{{ error() }}</div>
+} @else if (data(); as home) {
+  <section class="mb-5">
+    <h2 class="text-center mb-4">Popular Categories</h2>
+    <div class="row g-4 justify-content-center">
+      @for (category of home.categories; track category.id) {
+        <div class="col-md-4">
+          <div class="card shadow-sm h-100 text-center">
+            <app-image-carousel [images]="category.imagePath ? [category.imagePath] : []" [alt]="category.name" [height]="180" />
+            <div class="card-body">
+              <h5>{{ category.name }}</h5>
+              <a [routerLink]="['/categories', category.slug]" class="btn btn-outline-dark mt-2">Explore</a>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <div class="col-12 text-center text-muted">No categories found. Add some from the Admin panel.</div>
+      }
+    </div>
+  </section>
+
+  <section class="mb-4">
+    <h2 class="text-center mb-4">Featured Products</h2>
+    <div class="row g-4">
+      @for (product of home.featuredProducts; track product.id) {
+        <div class="col-6 col-md-3">
+          <app-product-card [product]="product" />
+        </div>
+      } @empty {
+        <div class="col-12 text-center text-muted">No products yet. Add some from the Admin panel.</div>
+      }
+    </div>
+  </section>
+} @else {
+  <p class="text-muted">Loading...</p>
+}

@@ -8,6 +8,28 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/home/home').then(m => m.Home),
   },
   {
+    path: 'products',
+    pathMatch: 'full',
+    loadComponent: () => import('./pages/catalog/product-list').then(m => m.ProductList),
+  },
+  {
+    path: 'products/:slug',
+    loadComponent: () => import('./pages/catalog/product-details').then(m => m.ProductDetails),
+  },
+  {
+    path: 'search',
+    loadComponent: () => import('./pages/catalog/search-results').then(m => m.SearchResults),
+  },
+  {
+    path: 'promotions',
+    data: { promotions: true },
+    loadComponent: () => import('./pages/catalog/product-list').then(m => m.ProductList),
+  },
+  {
+    path: 'categories/:slug',
+    loadComponent: () => import('./pages/catalog/category-page').then(m => m.CategoryPage),
+  },
+  {
     path: 'login',
     canActivate: [guestGuard],
     loadComponent: () => import('./pages/login/login').then(m => m.Login),
