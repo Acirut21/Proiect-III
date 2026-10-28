@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { adminGuard, guestGuard } from './core/auth.guards';
+import { adminGuard, authGuard, guestGuard } from './core/auth.guards';
 
 export const routes: Routes = [
   {
@@ -28,6 +28,11 @@ export const routes: Routes = [
   {
     path: 'categories/:slug',
     loadComponent: () => import('./pages/catalog/category-page').then(m => m.CategoryPage),
+  },
+  {
+    path: 'favorites',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/favorites/favorites').then(m => m.Favorites),
   },
   {
     path: 'login',

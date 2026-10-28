@@ -7,6 +7,7 @@ import { CatalogApi } from '../../core/catalog-api';
 import { ProductDetailPage } from '../../core/catalog.models';
 import { isNotFound } from '../../core/form-helpers';
 import { extractErrors } from '../../core/http-errors';
+import { FavoriteButton } from '../../shared/favorite-button/favorite-button';
 import { ImageCarousel } from '../../shared/image-carousel/image-carousel';
 import { ProductCard } from '../../shared/product-card/product-card';
 
@@ -15,7 +16,7 @@ const DELIVERY_LABELS: Record<string, string> = { Courier: 'Courier', StorePicku
 /** Pagina unui produs: galerie, pret, stoc, specificatii, descriere si produse similare. */
 @Component({
   selector: 'app-product-details',
-  imports: [RouterLink, DecimalPipe, ImageCarousel, ProductCard],
+  imports: [RouterLink, DecimalPipe, ImageCarousel, ProductCard, FavoriteButton],
   templateUrl: './product-details.html',
 })
 export class ProductDetails {

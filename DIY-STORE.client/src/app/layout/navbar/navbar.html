@@ -8,6 +8,8 @@
     </form>
 
     <div class="d-flex align-items-center gap-2">
+      <a class="btn btn-outline-light" routerLink="/favorites">❤ Favorites</a>
+
       <div class="dropdown" (click)="$event.stopPropagation()">
         <button type="button" class="btn btn-outline-light dropdown-toggle"
                 [attr.aria-expanded]="menuOpen()" (click)="categoriesOpen.set(false); toggleMenu()">

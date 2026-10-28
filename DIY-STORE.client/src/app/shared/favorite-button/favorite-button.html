@@ -1,0 +1,9 @@
+@if (auth.isLoggedIn()) {
+  @let active = favorites.isFavorite(productId());
+  <button type="button" class="btn btn-link p-1 lh-1 text-decoration-none fs-4"
+          [class.text-danger]="active" [class.text-dark]="!active"
+          [attr.aria-pressed]="active"
+          [attr.aria-label]="active ? 'Remove from favorites' : 'Add to favorites'"
+          [title]="active ? 'Remove from favorites' : 'Add to favorites'"
+          [disabled]="busy()" (click)="toggle()">{{ active ? '♥' : '♡' }}</button>
+}

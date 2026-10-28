@@ -258,7 +258,7 @@ export class ProductForm {
 
     request.subscribe({
       next: saved => {
-        this.flash.set(`Product "${saved.name}" ${this.isEdit ? 'updated' : 'created'}!`);
+        this.flash.set(`✅ Product "${saved.name}" ${this.isEdit ? 'updated' : 'created'}!`);
         void this.router.navigate(['/admin/products']);
       },
       error: (err: unknown) => {
