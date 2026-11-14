@@ -9,6 +9,12 @@
 
     <div class="d-flex align-items-center gap-2">
       <a class="btn btn-outline-light" routerLink="/favorites">❤ Favorites</a>
+      <a class="btn btn-outline-light position-relative" routerLink="/cart" aria-label="Cart">
+        🛒 Cart
+        @if (cart.count() > 0) {
+          <span class="badge rounded-pill bg-warning text-dark ms-1" data-testid="cart-badge">{{ cart.count() }}</span>
+        }
+      </a>
 
       <div class="dropdown" (click)="$event.stopPropagation()">
         <button type="button" class="btn btn-outline-light dropdown-toggle"

@@ -16,6 +16,9 @@
       <p class="text-muted text-decoration-line-through mb-0">{{ p.previousPrice | number: '1.2-2' }} RON</p>
     }
     <p class="fw-bold text-warning mb-2">{{ p.price | number: '1.2-2' }} RON</p>
-    <a [routerLink]="['/products', p.slug]" class="btn btn-outline-secondary btn-sm mt-auto">View</a>
+    <div class="d-flex justify-content-center gap-2 mt-auto">
+      <a [routerLink]="['/products', p.slug]" class="btn btn-outline-secondary btn-sm">View</a>
+      <app-add-to-cart [product]="p" />
+    </div>
   </div>
 </div>

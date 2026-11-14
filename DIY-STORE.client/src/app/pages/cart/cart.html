@@ -1,0 +1,122 @@
+<h1 class="h3 fw-bold mb-4">Shopping Cart</h1>
+
+@if (error()) {
+  <div class="alert alert-danger" role="alert">{{ error() }}</div>
+}
+
+@if (!loaded()) {
+  <p class="text-muted">Loading...</p>
+} @else if (cart.count() === 0) {
+  <div class="card shadow-sm p-5 text-center">
+    <p class="lead text-muted mb-4">Your cart is empty.</p>
+    <div><a routerLink="/products" class="btn btn-warning">Shop Now</a></div>
+  </div>
+} @else if (summary(); as s) {
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="card shadow-sm">
+        <div class="table-responsive">
+          <table class="table align-middle mb-0">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Product</th>
+                <th class="text-end">Price</th>
+                <th style="width:140px">Quantity</th>
+                <th class="text-end">Subtotal</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (line of s.lines; track line.productId) {
+                <tr [class.table-danger]="line.problem === 'OutOfStock'" [class.table-warning]="line.problem === 'NotEnough'">
+                  <td style="width:80px">
+                    @if (line.imagePath) {
+                      <img [src]="'/images/' + line.imagePath" [alt]="line.name" style="width:64px;height:64px;object-fit:contain">
+                    }
+                  </td>
+                  <td>
+                    <a [routerLink]="['/products', line.slug]" class="fw-semibold text-decoration-none">{{ line.name }}</a>
+                    @if (line.problem === 'OutOfStock') {
+                      <div class="text-danger small">Out of stock — please remove</div>
+                    } @else if (line.problem === 'NotEnough') {
+                      <div class="text-danger small">Max stock: {{ line.stock }}</div>
+                    }
+                  </td>
+                  <td class="text-end text-nowrap">{{ line.unitPrice | number: '1.2-2' }} RON</td>
+                  <td>
+                    @if (line.problem === 'OutOfStock') {
+                      <span class="text-muted">—</span>
+                    } @else {
+                      <input #qty type="number" class="form-control form-control-sm" min="1" [max]="line.stock"
+                             [value]="line.quantity" [attr.aria-label]="'Quantity of ' + line.name"
+                             (change)="changeQuantity(line, qty.value, qty)">
+                    }
+                  </td>
+                  <td class="text-end text-nowrap fw-semibold">{{ line.subtotal | number: '1.2-2' }} RON</td>
+                  <td class="text-end">
+                    <button type="button" class="btn btn-outline-danger btn-sm" (click)="remove(line)">Remove</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card shadow-sm p-4">
+        <h2 class="h5 fw-bold mb-3">Order summary</h2>
+
+        <div class="mb-3">
+          <div class="fw-semibold mb-1">Delivery</div>
+          @if (s.deliveryConflict) {
+            <div class="alert alert-warning small mb-0">
+              The products in your cart have no delivery method in common. Please remove some of them.
+            </div>
+          } @else {
+            @for (option of s.deliveryOptions; track option.method) {
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="delivery" [id]="'delivery-' + option.method"
+                       [checked]="s.deliveryMethod === option.method" (change)="chosenMethod.set(option.method)">
+                <label class="form-check-label" [for]="'delivery-' + option.method">
+                  {{ label(option.method) }} —
+                  @if (option.cost === 0) {
+                    <span class="text-success">Free</span>
+                  } @else {
+                    {{ option.cost | number: '1.2-2' }} RON
+                  }
+                </label>
+              </div>
+            }
+          }
+        </div>
+
+        <dl class="row mb-0">
+          <dt class="col-7 fw-normal">Subtotal</dt>
+          <dd class="col-5 text-end">{{ s.subtotal | number: '1.2-2' }} RON</dd>
+          <dt class="col-7 fw-normal">Shipping</dt>
+          <dd class="col-5 text-end">
+            @if (s.shippingCost === 0) { Free } @else { {{ s.shippingCost | number: '1.2-2' }} RON }
+          </dd>
+          <dt class="col-7 fs-5">Total</dt>
+          <dd class="col-5 text-end fs-5 fw-bold text-warning">{{ s.total | number: '1.2-2' }} RON</dd>
+        </dl>
+
+        @if (!s.canCheckout) {
+          <p class="text-danger small mt-3 mb-0">Fix the highlighted products to continue.</p>
+          <button type="button" class="btn btn-warning w-100 mt-2" disabled>Checkout</button>
+        } @else if (auth.isLoggedIn()) {
+          <a routerLink="/checkout" class="btn btn-warning w-100 mt-3">Checkout</a>
+        } @else {
+          <a routerLink="/login" [queryParams]="{ returnUrl: '/checkout' }" class="btn btn-warning w-100 mt-3">
+            Log in to checkout
+          </a>
+        }
+      </div>
+    </div>
+  </div>
+} @else {
+  <p class="text-muted">Loading...</p>
+}

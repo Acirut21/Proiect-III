@@ -1,0 +1,12 @@
+@let p = product();
+@if (p.stock <= 0) {
+  <button type="button" class="btn btn-secondary btn-sm" disabled>Out of stock</button>
+} @else if (withQuantity()) {
+  <div class="d-flex align-items-center gap-2">
+    <input #qty type="number" class="form-control" style="width:90px" min="1" [max]="p.stock" value="1"
+           aria-label="Quantity" (keydown.enter)="add(qty.value)">
+    <button type="button" class="btn btn-warning" (click)="add(qty.value)">🛒 Add to cart</button>
+  </div>
+} @else {
+  <button type="button" class="btn btn-warning btn-sm" (click)="add('1')">Add</button>
+}

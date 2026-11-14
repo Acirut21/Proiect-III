@@ -1,6 +1,7 @@
 import { Component, HostListener, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
+import { CartService } from '../../core/cart.service';
 import { CatalogApi } from '../../core/catalog-api';
 import { PublicCategory } from '../../core/catalog.models';
 
@@ -11,6 +12,7 @@ import { PublicCategory } from '../../core/catalog.models';
 })
 export class Navbar {
   protected readonly auth = inject(AuthService);
+  protected readonly cart = inject(CartService);
   private readonly catalog = inject(CatalogApi);
   private readonly router = inject(Router);
   protected readonly menuOpen = signal(false);

@@ -72,6 +72,10 @@
           }
         </div>
 
+        <div class="mb-3">
+          <app-add-to-cart [product]="p" [withQuantity]="true" />
+        </div>
+
         @if (deliveryText()) {
           <p class="mb-3"><span class="text-muted">Delivery:</span>&ngsp;<strong>{{ deliveryText() }}</strong></p>
         }

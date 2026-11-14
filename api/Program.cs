@@ -4,6 +4,7 @@ using DiyStore.Api.Auth;
 using DiyStore.Api.Catalog;
 using DiyStore.Api.Identity;
 using DiyStore.Api.Persistence;
+using DiyStore.Api.Shopping;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -62,6 +63,7 @@ builder.Services
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IImageStorage, ImageStorage>();
+builder.Services.AddScoped<CartCalculator>();
 
 // CORS pentru serverul de dezvoltare Angular
 const string ClientPolicy = "client";

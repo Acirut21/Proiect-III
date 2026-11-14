@@ -30,6 +30,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/catalog/category-page').then(m => m.CategoryPage),
   },
   {
+    path: 'cart',
+    loadComponent: () => import('./pages/cart/cart').then(m => m.Cart),
+  },
+  {
     path: 'favorites',
     canActivate: [authGuard],
     loadComponent: () => import('./pages/favorites/favorites').then(m => m.Favorites),
